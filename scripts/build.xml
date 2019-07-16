@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<project name="Ant-Test" default="main" basedir=".">
+    <!-- Sets variables which can later be used. -->
+    <!-- The value of a property is accessed via ${} -->
+	
+    <property name="ear.dir" location="C:\temp\test\artifacts" />
+    <property name="tibco.tra.home" location="C:\tibco\tra\5.9" />
+    <property name="tibco.traBinaries.path" location="${tibco.tra.home}\bin" />
+    <property name="tibco.BuildEar.path" location="${tibco.traBinaries.path}\buildear.exe" />
+    <property name="tibco.AppManager.path" location="${tibco.traBinaries.path}\AppManage.exe" />
+    <property name="tibco.traPropFile.path" location="${tibco.tra.home}\bin\buildear.tra" />
+    <property name="tibco.AppManageTraFile.path" location="${tibco.tra.home}\bin\AppManage.tra" />
+    <property name="tibco.project.path" location="C:\temp\test\src\Zain_batch-1_root" />
+    <property name="output.ear.path" location="${ear.dir}\Zain_batch-1_root.ear" />
+    <property name="Exported.XML.Path" location="C:\temp\test\artifacts" />
+    <!--property name="propertyFile.Name" location="C:\temp\my.properties" /-->
+	<!-- Deployment properties -->
+    <property name="Server.tibco.tra.home" location="${tibco.traBinaries.path}" />
+    <!--property name="tibco.admin.dir" location="SIT01/Test_Deploy" /-->
+    <property name="tibco.admin.dir" value="ZainTibcoDev" />
+    <property name="tibco.domain" value="dev" />
+    <property name="tibco.app.earfile" location="${output.ear.path}" />
+	
+	<target name="init">
+		<property environment="env"/>
+		<property name="appmanage.deployment.description" value="${env.JOB_NAME}-Jenkins${env.BUILD_NUMBER}-SVN${env.SVN_REVISION}"/>
+		<!--
+		<copy todir="${temp.dir}">
+			<fileset dir="${basedir}">
+				<exclude name="**/.svn" />
+				<exclude name="${conf.local.dir}/**/*" />
+				<exclude name="build.xml" />
+			</fileset>
+		</copy>
+		<mkdir dir="${ear.dir}" />
+		<mkdir dir="${temp.dir}" />
+		-->
+	</target>
+
+	<target name="Clean" description="Delete EAR directory create a new one ">
+		<delete dir="${ear.dir}" failonerror="false"/>
+		<mkdir dir="${ear.dir}"/>
+	</target>
+	
+	<target name="Build.EAR" depends="Clean" description="Build EAR for the BW project">
+		<exec executable="${tibco.BuildEar.path}" failonerror="true">
+			<env key="PATH" path="${tibco.tra.home}"/> 
+			<arg value="-x"/> <arg value="-v"/>
+			<arg value="--propFile"/> <arg value="${tibco.traPropFile.path}"/>
+			<arg value="-p"/> <arg value="${tibco.project.path}"/>
+			<arg value="-o"/> <arg value="${output.ear.path}"/>
+			<!--<arg value="-ear"/> <arg value="${archive.path}"/>-->
+		</exec>
+	</target>
+
+	<target name="Export.XML" depends="Build.EAR" description=" Extract the XML config file from the generated ear file with global vars that are defined in the EAR ">
+		<exec executable="${tibco.AppManager.path}" failonerror="true">
+			<env key="PATH" path="${tibco.traBinaries.path}"/>
+			<arg value="-export"/> <arg value="-out"/> <arg value="${Exported.XML.Path}"/>
+			<arg value="-ear"/> <arg value="${output.ear.path}"/>
+		</exec>
+	</target>
+	
+	<target name="Update.XML" description="update the generated XML configuration values based on ENV Property file values " depends="init">
+		<property file="${propertyFile.Name}" prefix="x"/>
+		<local name="propertyList"/>	
+		<for list="${propertyList}" param="sequence">
+			<sequential>
+				<xmltask dest="${Updated.xml.Path}">
+					<fileset file="${Updated.xml.Path}"/>
+					<replace path="${x.@{sequence}.xpath}" withText="${x.@{sequence}.value}"/>
+				</xmltask>
+			</sequential>
+		</for>
+	</target>
+
+	<!--target name="CopyDeploymentFilestoRemoteMachine" description="Copy the generated XML and updated Ear " depends="Update.XML">
+		<sshexec trust="true" host="${tibco.server.host}" username="${ssh.user}" password="${SSH.Password}" 	command="mkdir ${Server.Config.Folder.Path};" failonerror="false"/>
+		<scp trust="true" file="${output.ear.path}" todir="${SSH.User}:${SSH.Password}@${tibco.server.host}:${SSH.Location}"/>
+		<scp trust="true" file="${Updated.xml.Path}" todir="${SSH.User}:${SSH.Password}@${tibco.server.host}:${SSH.Location}"/>
+	</target-->
+	
+	<!-- 
+		For deploying use the following commands: 
+		AppManage -deploy -ear "EAR loc" -deployconfig  "XML loc" -app "ServiceName" -domain <<Domain NAme>> -user <<user name>> -pw <<password>> ##
+		##- can be any of the following:  -nostart or -force
+
+		For Undeploying use the following commands:
+		AppManage -undeploy -app "ServiceName" -domain <<Domain NAme>> -user <<user name>> -pw <<password>> ##
+	
+	./AppManage -deploy -app ${tibco.admin.dir} -domain ${tibco.domain} 	-deployconfig ${tibco.app.xml.config} -ear ${tibco.app.earfile} 	-user ${tibco.admin.user} -pw ${tibco.admin.password} -desc ${appmanage.deployment.description} -nostart"
+	-->
+	<target name="deployEarOnWindows" depends="Build.EAR" description=" Deploy EAR using 	Appmange and don't start application after deployment ">
+		<exec executable="${tibco.AppManager.path}" failonerror="true">
+			<env key="PATH" path="${tibco.tra.home}"/> 
+			<arg value="-deploy"/> 
+			<arg value="--propFile"/> <arg value="${tibco.AppManageTraFile.path}"/>
+			<arg value="-app"/> <arg value="${tibco.admin.dir}"/>
+			<arg value="-domain"/> <arg value="${tibco.domain}"/>
+			<arg value="-user"/> <arg value="admin"/>
+			<arg value="-pw"/> <arg value="admin"/>
+			<arg value="-ear"/> <arg value="${tibco.app.earfile}"/>
+			<arg value="-deployConfig"/> <arg value="${Exported.XML.Path}\Zain_batch-1_root.xml"/>
+			<arg value="-nostart"/>
+			<!--<arg value="-ear"/> <arg value="${archive.path}"/>-->
+		</exec>
+	</target>
+	<!--target name="deployEarOnLinux" depends="CreateDeployment Prerequisites" description=" Deploy EAR & XML using 	Appmange and don't start application after deployment ">
+	<sshexec trust="true" host="${tibco.server.host}" username="${SSH.User}" password="${SSH.Password}"
+		command="cd ${Server.tibco.tra.home};
+		./AppManage -deploy -app ${tibco.admin.dir} -domain ${tibco.domain}
+		-deployconfig ${tibco.app.xml.config} -ear ${tibco.app.earfile}
+		-user ${tibco.admin.user} -pw ${tibco.admin.password} -desc ${appmanage.deployment.description} -nostart"
+		failonerror="false"/>
+	</target-->
+
+
+    <!--Creates the deployable jar file  -->
+	<!--
+    <target name="jar" depends="compile">
+        <jar destfile="${dist.dir}\de.vogella.build.test.ant.jar" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Main-Class" value="test.Main" />
+            </manifest>
+        </jar>
+    </target>
+	-->
+
+	
+    <target name="main" depends="Clean,Build.EAR, Export.XML, deployEarOnWindows">
+        <description>Main target</description>
+    </target>
+	
+
+</project>
+
