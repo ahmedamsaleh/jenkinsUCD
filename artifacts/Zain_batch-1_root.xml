@@ -18,7 +18,7 @@
         </NameValuePair>
         <NameValuePairPassword>
             <name>BusinessProcesses/Volte/QueryCustomerServices/password</name>
-            <value>#!9iyMdSnP33V38iMcszHYpfe2houkus3VPLOTmgk7B+w=</value>
+            <value>#!akCwur6fy+oIp6CSpQ2qgKyw7LHUWDb+MwkDgIxrqLc=</value>
         </NameValuePairPassword>
         <NameValuePair>
             <name>BusinessProcesses/Volte/QueryCustomerServices/username</name>
@@ -58,7 +58,7 @@
         </NameValuePairInteger>
         <NameValuePairPassword>
             <name>BusinessProcesses/XmlReciever/Password</name>
-            <value>#!VjKz6xsD8oMrxg5YW1TI8zf7bZnyOJz6qy45RlOiau4=</value>
+            <value>#!dwp83Mf0AprTNqyVEySIWKdXPqypRYmxD9HxImIIwpc=</value>
         </NameValuePairPassword>
         <NameValuePairInteger>
             <name>BusinessProcesses/XmlReciever/PrepaidTenure</name>
@@ -70,7 +70,7 @@
         </NameValuePair>
         <NameValuePairPassword>
             <name>BusinessProcesses/XmlReciever/QueryCustomerServices/password</name>
-            <value>#!aLyoQjcADeF50MmzYQVnvEUqSJgp5+h0U3eDlbCpAWc=</value>
+            <value>#!gR9L7RkW1z3TEn+s0+43zOulynqP1FvxCZXrhQFyWuI=</value>
         </NameValuePairPassword>
         <NameValuePair>
             <name>BusinessProcesses/XmlReciever/QueryCustomerServices/username</name>
@@ -398,7 +398,7 @@
         </NameValuePairInteger>
         <NameValuePairPassword>
             <name>CommonResources/Connections/JDBC/Internal/TibcoAPP/password</name>
-            <value>#!+ur4I840PqfL2gzWblY7L42CJYILFnqUGaFJ2V9gxUQ=</value>
+            <value>#!9saAHQb7v6QzqdwjcRLP4XTWMwxQowjUFo416v/CTSI=</value>
         </NameValuePairPassword>
         <NameValuePairInteger>
             <name>CommonResources/Connections/JDBC/Internal/TibcoAPP/timeout</name>
@@ -434,7 +434,7 @@
         </NameValuePairInteger>
         <NameValuePairPassword>
             <name>CommonResources/Connections/JDBC/Internal/TibcoCLE/Password</name>
-            <value>#!dVvnD9pZBZHKIH5AcExbBlUiAdtS/rnBpmO8o3dhWQw=</value>
+            <value>#!Bro+gQfnU3gkYD9NAJYZFM6AcSHSiMs+5sXdIaP6nOY=</value>
         </NameValuePairPassword>
         <NameValuePairInteger>
             <name>CommonResources/Connections/JDBC/Internal/TibcoCLE/QueryTimeout</name>
@@ -454,7 +454,7 @@
         </NameValuePair>
         <NameValuePairPassword>
             <name>CommonResources/Connections/JMS/CLEEMSConnection/JNDIPassword</name>
-            <value>#!pG43Dds+ZLm0r2zJRNImr+ZMdpxqeFjavcR26QYwReU=</value>
+            <value>#!LJlh651190wuyX+qf/Mn0sNgOIJNjNZIXFC5h+m+5RE=</value>
         </NameValuePairPassword>
         <NameValuePair>
             <name>CommonResources/Connections/JMS/CLEEMSConnection/JNDIUrl</name>
@@ -466,7 +466,7 @@
         </NameValuePair>
         <NameValuePairPassword>
             <name>CommonResources/Connections/JMS/CLEEMSConnection/Password</name>
-            <value>#!2ajOMZupUZxWV8uoX+3crMj/N380BT1gcIue7m+xchU=</value>
+            <value>#!qvBHuj+2EcREyB23B+74BGF9rQTeTKmqP7qQg9d4Yb4=</value>
         </NameValuePairPassword>
         <NameValuePair>
             <name>CommonResources/Connections/JMS/CLEEMSConnection/QueueConnectionFactory</name>
@@ -490,7 +490,7 @@
         </NameValuePair>
         <NameValuePairPassword>
             <name>CommonResources/Connections/JMS/EAI_EMSConnection/JNDIPassword</name>
-            <value>#!p+2EAn7M11ebJsopGBxk7C+Py964tazoCunq3cyiyBQ=</value>
+            <value>#!lr1rQTRyE9q11YXUlUpGVvWZ8xsdpdMe8qzgG46Ezfg=</value>
         </NameValuePairPassword>
         <NameValuePair>
             <name>CommonResources/Connections/JMS/EAI_EMSConnection/JNDIUrl</name>
@@ -502,7 +502,7 @@
         </NameValuePair>
         <NameValuePairPassword>
             <name>CommonResources/Connections/JMS/EAI_EMSConnection/Password</name>
-            <value>#!N+xbiIrVADdmxsH4NK/w5TGXdZhIY4EMdiOwdKa9DjA=</value>
+            <value>#!2RgqwNVuS9SksJX0YjcOJFuMhiZudWQsfqgJW11QClU=</value>
         </NameValuePairPassword>
         <NameValuePair>
             <name>CommonResources/Connections/JMS/EAI_EMSConnection/QueueConnectionFactory</name>
@@ -695,8 +695,15 @@
             <failureCount>0</failureCount>
             <failureInterval>0</failureInterval>
             <bwprocesses>
-                <bwprocess name="BusinessProcesses/Volte/Services/MainService.process">
+                <bwprocess name="BusinessProcesses/Receiver/Services/XmlMainService.process">
                     <starter>HTTP Receiver</starter>
+                    <enabled>true</enabled>
+                    <maxJob>0</maxJob>
+                    <activation>true</activation>
+                    <flowLimit>0</flowLimit>
+                </bwprocess>
+                <bwprocess name="CommonProcesses/Caching/Startup.process">
+                    <starter>onStartup</starter>
                     <enabled>true</enabled>
                     <maxJob>0</maxJob>
                     <activation>true</activation>
@@ -709,15 +716,8 @@
                     <activation>true</activation>
                     <flowLimit>0</flowLimit>
                 </bwprocess>
-                <bwprocess name="BusinessProcesses/Receiver/Services/XmlMainService.process">
+                <bwprocess name="BusinessProcesses/Volte/Services/MainService.process">
                     <starter>HTTP Receiver</starter>
-                    <enabled>true</enabled>
-                    <maxJob>0</maxJob>
-                    <activation>true</activation>
-                    <flowLimit>0</flowLimit>
-                </bwprocess>
-                <bwprocess name="CommonProcesses/Caching/Startup.process">
-                    <starter>onStartup</starter>
                     <enabled>true</enabled>
                     <maxJob>0</maxJob>
                     <activation>true</activation>
@@ -735,7 +735,7 @@
                 <checkpoint>Local File</checkpoint>
                 <checkpoint>/CommonResources/Connections/JDBC/TbcoCleConnection</checkpoint>
                 <checkpoint>/CommonResources/Connections/JDBC/TIBCOAppConnection</checkpoint>
-                <tablePrefix>Process_Ar_19163252</tablePrefix>
+                <tablePrefix>Process_Ar_96768918</tablePrefix>
             </checkpoints>
             <isFt>false</isFt>
         </bw>

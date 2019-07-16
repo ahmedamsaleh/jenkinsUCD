@@ -74,22 +74,6 @@
 		</for>
 	</target>
 
-	<!--target name="CopyDeploymentFilestoRemoteMachine" description="Copy the generated XML and updated Ear " depends="Update.XML">
-		<sshexec trust="true" host="${tibco.server.host}" username="${ssh.user}" password="${SSH.Password}" 	command="mkdir ${Server.Config.Folder.Path};" failonerror="false"/>
-		<scp trust="true" file="${output.ear.path}" todir="${SSH.User}:${SSH.Password}@${tibco.server.host}:${SSH.Location}"/>
-		<scp trust="true" file="${Updated.xml.Path}" todir="${SSH.User}:${SSH.Password}@${tibco.server.host}:${SSH.Location}"/>
-	</target-->
-	
-	<!-- 
-		For deploying use the following commands: 
-		AppManage -deploy -ear "EAR loc" -deployconfig  "XML loc" -app "ServiceName" -domain <<Domain NAme>> -user <<user name>> -pw <<password>> ##
-		##- can be any of the following:  -nostart or -force
-
-		For Undeploying use the following commands:
-		AppManage -undeploy -app "ServiceName" -domain <<Domain NAme>> -user <<user name>> -pw <<password>> ##
-	
-	./AppManage -deploy -app ${tibco.admin.dir} -domain ${tibco.domain} 	-deployconfig ${tibco.app.xml.config} -ear ${tibco.app.earfile} 	-user ${tibco.admin.user} -pw ${tibco.admin.password} -desc ${appmanage.deployment.description} -nostart"
-	-->
 	<target name="deployEarOnWindows" depends="Build.EAR" description=" Deploy EAR using 	Appmange and don't start application after deployment ">
 		<exec executable="${tibco.AppManager.path}" failonerror="true">
 			<env key="PATH" path="${tibco.tra.home}"/> 
@@ -105,26 +89,6 @@
 			<!--<arg value="-ear"/> <arg value="${archive.path}"/>-->
 		</exec>
 	</target>
-	<!--target name="deployEarOnLinux" depends="CreateDeployment Prerequisites" description=" Deploy EAR & XML using 	Appmange and don't start application after deployment ">
-	<sshexec trust="true" host="${tibco.server.host}" username="${SSH.User}" password="${SSH.Password}"
-		command="cd ${Server.tibco.tra.home};
-		./AppManage -deploy -app ${tibco.admin.dir} -domain ${tibco.domain}
-		-deployconfig ${tibco.app.xml.config} -ear ${tibco.app.earfile}
-		-user ${tibco.admin.user} -pw ${tibco.admin.password} -desc ${appmanage.deployment.description} -nostart"
-		failonerror="false"/>
-	</target-->
-
-
-    <!--Creates the deployable jar file  -->
-	<!--
-    <target name="jar" depends="compile">
-        <jar destfile="${dist.dir}\de.vogella.build.test.ant.jar" basedir="${build.dir}">
-            <manifest>
-                <attribute name="Main-Class" value="test.Main" />
-            </manifest>
-        </jar>
-    </target>
-	-->
 
 	
     <target name="main" depends="Clean,Build.EAR, Export.XML, deployEarOnWindows">
